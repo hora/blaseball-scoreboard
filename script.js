@@ -170,6 +170,19 @@ function buildGame(gamesData) {
     getSalmonScore(game.id, function(score) {
       salmonScore = score;
       gameElement.querySelector('.salmon .score').textContent = salmonScore;
+
+      if (salmonScore > game.awayScore && salmonScore > game.homeScore) {
+        gameElement.querySelector('.salmon').classList.add('winner-two');
+
+      } else {
+        gameElement.querySelector('.away').classList.add(game.awayScore > game.homeScore ? 'winner' : 'loser');
+        gameElement.querySelector('.home').classList.add(game.awayScore < game.homeScore ? 'winner' : 'loser');
+
+        if (salmonScore > game.awayScore || salmonScore > game.homeScore) {
+          gameElement.querySelector('.salmon').classList.add('winner-two');
+        }
+      }
+
     });
 
 
@@ -185,8 +198,6 @@ function buildGame(gamesData) {
         overview.textContent += `/${game.inning + 1}`;
       }
 
-      gameElement.querySelector('.away').classList.add(game.awayScore > game.homeScore ? 'winner' : 'loser');
-      gameElement.querySelector('.home').classList.add(game.awayScore < game.homeScore ? 'winner' : 'loser');
     }
 
     ['away', 'home'].forEach((team) => {

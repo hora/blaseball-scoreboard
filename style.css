@@ -126,7 +126,8 @@ body.postseason .game {
     margin-bottom: 0.25em;
 }
 
-.arrow {
+.arrow,
+.arrow-pink {
     display: none;
     align-self: center;
 }
@@ -139,6 +140,17 @@ body.postseason .game {
 }
 
 .winner .arrow path {
+    fill: var(--text);
+}
+
+.winner-two .arrow-pink {
+    display: block;
+    height: 14.3px;
+    width: 1.1em;
+    margin-right: -1.1em;
+}
+
+.winner-two .arrow-pink path {
     fill: var(--text);
 }
 
