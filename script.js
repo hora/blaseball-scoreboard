@@ -54,11 +54,18 @@ function ordinal(i) {
   return `${i}th`;
 }
 
-function cloneTemplate() {
+function cloneGameTemplate() {
   const clone = document.querySelector('#template-game').content.cloneNode(true);
   const gameElement = clone.querySelector('.game');
   document.body.append(clone);
   return gameElement;
+}
+
+function cloneDayTemplate() {
+  const clone = document.querySelector('#template-day').content.cloneNode(true);
+  const dayElement = clone.querySelector('header');
+  document.body.append(clone);
+  return dayElement;
 }
 
 function emoji(e) {
@@ -67,7 +74,7 @@ function emoji(e) {
 }
 
 function newGame(game) {
-  const gameElement = cloneTemplate();
+  const gameElement = cloneGameTemplate();
   gameElement.dataset.id = game.id;
 
   ['away', 'home'].forEach((team) => {
@@ -78,6 +85,116 @@ function newGame(game) {
   });
 
   return gameElement;
+}
+
+function newDay(season, day) {
+  const dayElement = cloneDayTemplate();
+
+  dayElement.querySelector('.season').textContent = season;
+  dayElement.querySelector('.day').textContent = day;
+
+  return dayElement;
+}
+
+function getSalmonScore(gameId, cb) {
+  const salmonURL = 'https://api.sibr.dev/chronicler/v1/games/updates?search=salmon&game=' + gameId;
+  fetch(salmonURL).then((resp) => {
+    if (resp.ok) {
+      resp.json().then((salmonData) => {
+        let salmonScore = 0;
+
+          salmonData.data.forEach((ev) => {
+            ev = ev.data;
+
+            const update = ev.lastUpdate.toLowerCase() || '';
+            const match = update.match(/(\d+) of the .* runs are lost/);
+
+            if (match) {
+              salmonScore += parseInt(match[0]) || 0;
+            }
+          });
+
+        cb(salmonScore);
+
+      });
+    } else {
+      console.error('error:', resp.status);
+    }
+  });
+}
+
+async function getGames() {
+  const gamesURL = 'https://api.sibr.dev/chronicler/v1/games?finished=true&season=14&weather=19';
+
+  const response = await fetch(gamesURL);
+  if (response.ok) {
+    const gamesData = await response.json();
+
+    buildGame(gamesData);
+    //console.log(gamesData)
+
+    //gamesData.data.forEach((game) => {
+      //game = game.data;
+      //const salmonScore = await getSalmonScore(game.data);
+
+      
+    //});
+
+  } else {
+    console.error('error:', response.status);
+  }
+}
+
+function buildGame(gamesData) {
+  let day = null;
+
+  gamesData.data.forEach((game) => {
+    game = game.data;
+    let salmonScore = 0;
+    //console.log(game)
+
+    if (game.isPostseason) {
+      return;
+    }
+
+    if (game.day !== day) {
+      day = game.day;
+      newDay(game.season + 1, game.day + 1);
+    }
+
+    const gameElement = document.querySelector(`.game[data-id="${game.id}"]`) ?? newGame(game);
+    if (game.gameComplete) {
+      gameElement.classList.add('complete');
+    }
+
+    getSalmonScore(game.id, function(score) {
+      salmonScore = score;
+      gameElement.querySelector('.salmon .score').textContent = salmonScore;
+    });
+
+
+    const overview = gameElement.querySelector('.overview');
+    if (game.gameComplete) {
+      overview.classList.remove('active');
+      overview.textContent = 'Final';
+      //if (game.shame) {
+        //overview.classList.add('shame');
+        //overview.textContent += '/SHAME';
+      //}
+      if (game.inning > 8) {
+        overview.textContent += `/${game.inning + 1}`;
+      }
+
+      gameElement.querySelector('.away').classList.add(game.awayScore > game.homeScore ? 'winner' : 'loser');
+      gameElement.querySelector('.home').classList.add(game.awayScore < game.homeScore ? 'winner' : 'loser');
+    }
+
+    ['away', 'home'].forEach((team) => {
+      gameElement.querySelector(`.${team} .score`).textContent = game[`${team}Score`];
+    });
+
+  });
+
 }
 
 function setupSource() {
@@ -182,9 +299,5 @@ function setupSource() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  'LOADING...'.split('').forEach((c) => {
-    const element = cloneTemplate();
-    element.querySelector('.away abbr').textContent = c;
-  });
-  setupSource();
+  getGames();
 });

@@ -7,15 +7,14 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+      <!--<template id="day-results">-->
+      <template id="template-day">
         <header class="regular">
             <a href="https://www.blaseball.com">Internet League Blaseball</a>&nbsp;&mdash;
             Season&nbsp;<span class="season">&nbsp;</span> Day&nbsp;<span class="day">&nbsp;</span>
         </header>
-        <header class="postseason">
-            <a href="https://www.blaseball.com">Internet League Blaseball</a>&nbsp;&mdash;
-            Season&nbsp;<span class="season">&nbsp;</span>&nbsp;&mdash;
-            <span class="phase">&nbsp;</span> Game&nbsp;<span class="gameindex">&nbsp;</span>
-        </header>
+      </template>
+
         <template id="template-game">
             <div class="game">
                 <div class="top">
@@ -43,21 +42,23 @@
                                     <path d="M14.142 0L0 14.142l14.142 14.142z" />
                                 </svg>
                             </div>
+                            <div class="team salmon">
+                                <div class="emoji">🐟</div>
+                                <div class="seed"></div>
+                                <abbr>SLMN</abbr>
+                                <div class="score">&nbsp;</div>
+                                <svg class="arrow" viewBox="0 0 14.142 28.284" preserveAspectRatio="xMaxYMin meet">
+                                    <path d="M14.142 0L0 14.142l14.142 14.142z" />
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bases" data-has-fourth="false">
-                        <svg viewBox="0 0 20.613 12.372">
-                            <path class="first" d="M 16.55,4.772 20.085,8.307 16.55,11.843 13.014,8.307 Z" />
-                            <path class="second" d="M 12.307,0.53 15.843,4.065 12.307,7.6 8.772,4.065 Z" />
-                            <path class="third" d="M 8.065,4.772 11.599,8.307 8.064,11.843 4.529,8.307 Z" />
-                            <path class="fourth" d="M 3.810,0.53 7.344,4.064 3.809,7.6 0.274,4.065 Z" />
-                        </svg>
-                        <div class="outs">&nbsp;</div>
                     </div>
                 </div>
             </div>
         </template>
-        <script src="script.js"></script>
-        <noscript>JavaScript is required.</noscript>
+      <!--</template>-->
+
+      <script src="script.js"></script>
+      <noscript>JavaScript is required.</noscript>
     </body>
 </html>
