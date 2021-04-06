@@ -1,9 +1,9 @@
-# blaseball-scoreboard
+# blaseball-scoreboard - now counting Salmon Runs!
 
-This is a minimalist scoreboard for Blaseball. https://iliana.github.io/blaseball-scoreboard/
+Based off of
+[blaseball-scoreboard](https://github.com/iliana/blaseball-scoreboard) by
+[@iliana](https://github.com/iliana).
 
-![aaaaaa](https://user-images.githubusercontent.com/52814/91622015-296bbe00-e94a-11ea-8796-7df3577417ae.png)
+This currently only shows completed regular season games with Salmon weather
+(whether the salmon swam upstream or not).
 
-## Forks
-
-- https://the-microphone-lifts.github.io/ ([GitHub](https://github.com/the-microphone-lifts/the-microphone-lifts.github.io)) -- Audio stream of your favorite team's game log
