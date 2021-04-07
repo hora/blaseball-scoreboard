@@ -7,3 +7,6 @@ Based off of
 This currently only shows completed regular season games with Salmon weather
 (whether the salmon swam upstream or not).
 
+Big thank you to [Blargo5](https://twitter.com/Blargo5) for the idea &
+inspiration, and for helping design and test!
+
