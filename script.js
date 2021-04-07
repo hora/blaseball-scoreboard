@@ -102,21 +102,23 @@ function getSalmonScore(gameId, cb) {
     if (resp.ok) {
       resp.json().then((salmonData) => {
         let salmonScore = 0;
+        let salmonSwims = 0;
 
-          salmonData.data.forEach((ev) => {
-            ev = ev.data;
+        salmonData.data.forEach((ev) => {
+          ev = ev.data;
+          salmonSwims++;
 
-            const update = ev.lastUpdate.toLowerCase() || '';
-            const match = update.match(/(\d+) of the .* runs are lost/);
+          const update = ev.lastUpdate.toLowerCase() || '';
+          const match = update.match(/(\d+) of the .* runs are lost/);
 
-            if (match) {
-              salmonScore += parseInt(match[0]) || 0;
-            }
-          });
+          if (match) {
+            salmonScore += parseInt(match[0]) || 0;
+          }
+        });
 
-        cb(salmonScore);
-
+        cb(salmonScore, salmonSwims);
       });
+
     } else {
       console.error('error:', resp.status);
     }
@@ -131,14 +133,6 @@ async function getGames() {
     const gamesData = await response.json();
 
     buildGame(gamesData);
-    //console.log(gamesData)
-
-    //gamesData.data.forEach((game) => {
-      //game = game.data;
-      //const salmonScore = await getSalmonScore(game.data);
-
-      
-    //});
 
   } else {
     console.error('error:', response.status);
@@ -151,7 +145,7 @@ function buildGame(gamesData) {
   gamesData.data.forEach((game) => {
     game = game.data;
     let salmonScore = 0;
-    //console.log(game)
+    let salmonSwims = 0;
 
     if (game.isPostseason) {
       return;
@@ -167,9 +161,15 @@ function buildGame(gamesData) {
       gameElement.classList.add('complete');
     }
 
-    getSalmonScore(game.id, function(score) {
+    getSalmonScore(game.id, function(score, swims) {
       salmonScore = score;
+      salmonSwims = swims;
       gameElement.querySelector('.salmon .score').textContent = salmonScore;
+
+      // just in case there's every negative salmon runs?
+      if (salmonSwims !== 0) {
+        gameElement.querySelector('.salmon .swims').textContent = `${salmonSwims} 🏊`;
+      }
 
       if (salmonScore > game.awayScore && salmonScore > game.homeScore) {
         gameElement.querySelector('.salmon').classList.add('winner-two');

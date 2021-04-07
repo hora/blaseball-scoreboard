@@ -111,10 +111,15 @@ body.postseason .game {
     font-weight: normal;
 }
 
-.score {
+.score,
+.swims {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+}
+
+.swims {
+  font-size: 9px;
 }
 
 .team {
