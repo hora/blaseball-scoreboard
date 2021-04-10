@@ -141,14 +141,19 @@ async function getGames() {
 
 function buildGame(gamesData) {
   let day = null;
+  let firstPostseason = true;
 
   gamesData.data.forEach((game) => {
     game = game.data;
     let salmonScore = 0;
     let salmonSwims = 0;
 
-    if (game.isPostseason) {
-      return;
+    if (game.isPostseason && firstPostseason) {
+      firstPostseason = false;
+      const ps = document.createElement('header');
+      ps.classList.add('divider');
+      ps.textContent = 'Postseason';
+      document.body.append(ps);
     }
 
     if (game.day !== day) {

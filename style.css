@@ -249,3 +249,7 @@ body.postseason .team .seed {
 .bases[data-has-fourth="false"] svg {
     margin-left: -0.5em;
 }
+
+header.divider {
+  font-size: 13px;
+}
