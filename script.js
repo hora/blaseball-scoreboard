@@ -125,8 +125,8 @@ function getSalmonScore(gameId, cb) {
   });
 }
 
-async function getGames() {
-  const gamesURL = 'https://api.sibr.dev/chronicler/v1/games?finished=true&season=14&weather=19';
+async function getGames(season) {
+  const gamesURL = `https://api.sibr.dev/chronicler/v1/games?finished=true&season=${season-1}&weather=19&order=desc`;
 
   const response = await fetch(gamesURL);
   if (response.ok) {
@@ -141,20 +141,25 @@ async function getGames() {
 
 function buildGame(gamesData) {
   let day = null;
-  let firstPostseason = true;
+  //let firstPostseason = true;
+
+  const sn = document.createElement('header');
+  sn.classList.add('divider');
+  sn.textContent = `Season ${gamesData.data[0].data.season + 1}`;
+  document.body.append(sn);
 
   gamesData.data.forEach((game) => {
     game = game.data;
     let salmonScore = 0;
     let salmonSwims = 0;
 
-    if (game.isPostseason && firstPostseason) {
-      firstPostseason = false;
-      const ps = document.createElement('header');
-      ps.classList.add('divider');
-      ps.textContent = 'Postseason';
-      document.body.append(ps);
-    }
+    //if (game.isPostseason && firstPostseason) {
+      //firstPostseason = false;
+      //const ps = document.createElement('header');
+      //ps.classList.add('divider');
+      //ps.textContent = 'Postseason';
+      //document.body.append(ps);
+    //}
 
     if (game.day !== day) {
       day = game.day;
@@ -315,5 +320,6 @@ function setupSource() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  getGames();
+  getGames(16);
+  getGames(15);
 });
