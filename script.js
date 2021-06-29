@@ -55,16 +55,18 @@ function ordinal(i) {
 }
 
 function cloneGameTemplate() {
+  const wrapper = document.getElementById('scores-wrapper');
   const clone = document.querySelector('#template-game').content.cloneNode(true);
   const gameElement = clone.querySelector('.game');
-  document.body.append(clone);
+  wrapper.append(clone);
   return gameElement;
 }
 
 function cloneDayTemplate() {
+  const wrapper = document.getElementById('scores-wrapper');
   const clone = document.querySelector('#template-day').content.cloneNode(true);
   const dayElement = clone.querySelector('header');
-  document.body.append(clone);
+  wrapper.append(clone);
   return dayElement;
 }
 
@@ -132,6 +134,9 @@ async function getGames(season) {
   if (response.ok) {
     const gamesData = await response.json();
 
+    // empty currently selected season's scores
+    document.getElementById('scores-wrapper').replaceChildren();
+
     buildGame(gamesData);
 
   } else {
@@ -143,10 +148,12 @@ function buildGame(gamesData) {
   let day = null;
   //let firstPostseason = true;
 
+  const wrapper = document.getElementById('scores-wrapper');
+
   const sn = document.createElement('header');
   sn.classList.add('divider');
   sn.textContent = `Season ${gamesData.data[0].data.season + 1}`;
-  document.body.append(sn);
+  wrapper.append(sn);
 
   gamesData.data.forEach((game) => {
     game = game.data;
@@ -320,6 +327,40 @@ function setupSource() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  getGames(16);
-  getGames(15);
+  fetch('https://api.sibr.dev/datablase/v2/config').then((resp) => {
+    if (resp.ok) {
+      resp.json().then((data) => {
+        const sel = document.getElementById('season-select');
+
+        // s15 was the first with salmon weather, but seasons are 0-indexed
+        for (let i = 14; i <= data.seasons.maxSeason; i++) {
+          const opt = document.createElement('option');
+
+          opt.value = `${i+1}`;
+          opt.textContent = `${i+1}`;
+
+          if (i === data.seasons.maxSeason) {
+            opt.selected = true;
+          }
+
+          sel.append(opt);
+        }
+
+        sel.addEventListener('change', (evt) => {
+          const opts = evt.target.getElementsByTagName('option');
+
+          for (let i = 0; i < opts.length; i++) {
+            const o = opts.item(i);
+
+            if (o.selected) {
+              getGames(o.value);
+              return;
+            }
+          }
+        });
+
+        getGames(data.seasons.maxSeason + 1);
+      });
+    }
+  });
 });
